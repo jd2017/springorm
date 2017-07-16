@@ -1,0 +1,26 @@
+public interface RowMapper{
+	public Object mapRow(ResultSet rs);
+}
+
+public class PersonRowMapper implements RowMapper{
+	public Object mapRow(ResultSet rs){
+		Person p = new Person();
+		p.setName(rs.getString("name"));
+		return p;
+	}
+}
+
+queryForList(String sql,RowMapper rowMapper){
+	Connection conn = DriverManager.getConnection(url,username,password);
+	Statement stmt = conn.createStatement();
+	ResultSet rs = stmt.executeQuery(sql);
+	List list = new ArrayList();
+	while(rs.next()){
+	  Object obj = rowMapper.mapRow(rs);
+	  list.add(obj);
+        }
+	return list;
+}
+
+queryForList("select * from person",new PersonRowMapper());
+

@@ -1,0 +1,77 @@
+1、顶级接口
+	public interface PlatformTransactionManager {
+	     //得到事务
+		TransactionStatus getTransaction(TransactionDefinition definition) throws TransactionException;
+		//提交事务
+		void commit(TransactionStatus status) throws TransactionException;
+		//事务的回滚
+		void rollback(TransactionStatus status) throws TransactionException;
+	}
+
+	TransactionStatus
+		boolean isNewTransaction();
+2、抽象类
+	public abstract class AbstractPlatformTransactionManager implements PlatformTransactionManager{
+		//获取事务
+		public final TransactionStatus 
+			getTransaction(TransactionDefinition definition) 
+				throws TransactionException {
+			//抽象方法
+			Object transaction = doGetTransaction();
+		}
+		//将来谁继承该抽象类，谁实现该方法
+		protected abstract Object doGetTransaction() throws TransactionException;
+
+		public final void commit(TransactionStatus status) throws TransactionException {
+		
+		}
+
+		public final void rollback(TransactionStatus status) throws TransactionException {
+		
+		}
+	}
+3、实现类
+	DataSourceTransactionManager
+	HibernateTransactionManager
+	JdoTransactionManager
+	...
+
+
+案例分析：
+    public class PersonDao{
+	private PlatformTransactionManager platformTransactionManager;
+	public void setPlatformTransactionManager(PlatformTransactionManager platformTransactionManager){
+		this.platformTransactionManager = PlatformTransactionManager;
+	}
+ }
+ 
+ 原理：
+spring的声明式事务处理
+        由spring容器来完成的
+    	事务处理:spring容器来做
+    	    1、
+    	   		读写事务
+    	   		只读事务
+    	   	2、如果目标方法存在事务嵌套的问题，怎么样解决该问题
+        由程序员来完成的
+    	crud的操作
+    	声明式
+    	
+步骤：
+	1、创建dao、service层的包、接口、类
+	2、进行aop的配置了
+	
+思路:
+    spring的AOP
+       	目标类:service层的所有的类
+       	     dao层所有的类也得放入到spring容器中
+       	aop的配置
+       	   1、切入点表达式
+       	        	定位service层的类
+       	   2、引入tx事务的策略
+       	   		事务的管理器
+       	   		事务的策略
+       	   			方法的范围
+       	   			传播属性
+       	   			隔离机制
+       	   			只读或者读写属性
